@@ -34,6 +34,42 @@
             margin: 10px 0 0 0;
             display: block;
         }
+        .news__count {
+            cursor: pointer;
+        }
+        strong {
+            cursor: pointer;
+        }
+        .form-add-comment {
+            margin: 0 5px 5px 0;
+            width: 210px;
+            border: 1px dashed rgba(0, 89, 101, 0.82);
+            padding: 5px;
+        }
+        .add__author,
+        .add__text,
+        .add__btn,
+        .add__checkrule {
+            display: block;
+            margin: 0 0 5px 0;
+            padding: 5px;
+            width: 94%;
+            border: 1px solid rgba(0, 89, 101, 0.82);
+        }
+        .add__checkrule {
+            border: none;
+            font-size: 12px;
+        }
+        .add__btn {
+            box-sizing: content-box;
+            color: #fff;
+            text-transform: uppercase;
+            background: #007ddc;
+        }
+        .add__btn:disabled {
+            background: #ccc;
+            color: #999;
+        }
     </style>
 </head>
 <body>
@@ -44,32 +80,57 @@
                 {
                     id: 1,
                     author: "Саша Печкин",
-                    title: "В четверг, четвертого числа"
+                    text: "В четверг, четвертого числа...",
+                    bigText: "в четыре с четвертью часа четыре чёрненьких чумазеньких чертёнка чертили чёрными чернилами чертёж."
                 },
                 {
                     id: 2,
                     author: "Просто Вася",
-                    title: "Считаю. что $ должен стоить 35 рублей."
+                    text: "Считаю. что $ должен стоить 35 рублей.",
+                    bigText: "А евро 42!"
                 },
                 {
                     id: 3,
                     author: "Max Frontend",
-                    title: "Прошло два года, а доллар так и не стоит 35 рублей..."
+                    text: "Прошло два года, а доллар так и не стоит 35 рублей...",
+                    bigText: "А евро опять выше 70."
                 },
                 {
                     id: 4,
                     author: "Гость",
-                    title: "Бесплатно. Без смс и регистрации"
+                    text: "Бесплатно. Без смс и регистрации",
+                    bigText: "Вся инфа на сайте, не реклама!"
                 },
             ];
 
             class Article extends React.Component {
+                state = {
+                    visible: false,
+                }
+                handleReadMoreClick = (e) => {
+                    e.preventDefault();
+                    // this.setState({ visible: true }, () => {
+                    //     alert('Состояние изменилось');
+                    // });
+                    this.setState({ visible: true })
+                }
                 render() {
-                    const { author, title } = this.props.data;
+                    const { author, text, bigText } = this.props.data;
+                    const { visible } = this.state;
                     return (
                         <div className="article">
                             <p className="news__author">{author}</p>
-                            <p className="news__text">{title}</p>
+                            <p className="news__text">{text}</p>
+                            {
+                                (!visible) ? 
+                                    <a href="#" className="news__readmore" onClick={this.handleReadMoreClick}>Подробнее</a> :
+                                    null
+                            }
+                            {
+                                (visible) ? 
+                                    <p className="news__big-text">{bigText}</p> :
+                                    null
+                            }
                         </div>
                     )
                 }
@@ -78,11 +139,16 @@
             Article.propTypes = {
                 data: PropTypes.shape ({
                     author: PropTypes.srting,
-                    title: PropTypes.srting
+                    text: PropTypes.srting,
+                    bigText: PropTypes.srting
                 })
             }
 
             class News extends React.Component {
+
+                state = {
+                    counter: 0,
+                }
 
                 renderNews = () => {
                     const { data } = this.props;
@@ -101,18 +167,27 @@
                     return newsTemplate;
                 }
 
+                handleCounterClick = () => {
+                    const _counter = this.state.counter;
+                    this.setState({
+                        counter: _counter + 1,
+                    });
+                }
+
                 render() {
                     const { data } = this.props;
+                    const { counter } = this.state;
                     return (
                         <React.Fragment>
                             <div className="news">
                                 {this.renderNews()}
                                 {
                                     (data.length) ?
-                                        <strong>Всего новостей: {data.length}</strong> :
+                                        <strong onClick={this.handleCounterClick}>Всего новостей: {data.length}</strong>:
                                         null
                                 }
                             </div>
+                            <p>Количество кликов: {counter}</p>
                         </React.Fragment>
                     )
                 }
@@ -123,11 +198,65 @@
                 data: PropTypes.array.isRequired    // PropTypes (с большой буквы) = библиотека prop-types
             }
 
+            class Add extends React.Component {
+
+                state = {
+                    valueAuthor: '',
+                    valueText: '',
+                    isCheckRule: false
+                }
+
+                onChangeAuthorHandler = (e) => {
+                    let _value = e.currentTarget.value;
+                    this.setState({
+                        valueAuthor: _value
+                    });
+                }
+
+                onChangeTextHandler = (e) => {
+                    let _value = e.currentTarget.value;
+                    this.setState({
+                        valueText: _value
+                    });
+                }
+
+                onChangeRule = (e) => {
+                    let status = e.currentTarget.checked;
+                    this.setState({
+                        isCheckRule: status
+                    });
+                    console.log(status);
+                    
+                }
+
+                onBtnClickHandler = (e) => {
+                    let _author = this.state.valueAuthor;
+                    let _text = this.state.valueText;
+                    alert(_author + '\n' + _text);
+                }
+
+                render() {
+                    const { author, text, isCheckRule } = this.state;
+                    return (
+                        <div className="form-add-comment">
+                            <input type="text" className="add__author" placeholder="Ваше имя" value={author} onChange={this.onChangeAuthorHandler} />
+                            <textarea className="add__text" placeholder="Тест новости" value={text} onChange={this.onChangeTextHandler}></textarea>
+                            <label className="add__checkrule">
+                                <input type="checkbox" onChange={this.onChangeRule} /> Я соласен с правилами
+                            </label>
+                            <button className="add__btn" onClick={this.onBtnClickHandler} disabled={!isCheckRule}>
+                                Отправить
+                            </button>
+                        </div>
+                    )
+                }
+            }
 
             const App = () => {
                 return (
                     <div>
                         <h3>Новости</h3>
+                        <Add />
                         <News data={MyNews} />
                     </div>
                 )
