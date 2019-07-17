@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
+    <style>
+        body {
+            background: rgba(0, 102, 255, 0.38);
+            font-family: sans-serif;
+        }
+        p {
+            margin: 0 0 5px;
+        }
+        .article {
+            background: #fff;
+            border: 1px solid rgba(0, 89, 101, 0.82);
+            width: 600px;
+            margin: 0 0 5px;
+            box-shadow: 2px 2px 5px -1px rgb(0, 81, 202);
+            padding: 3px 5px;
+        }
+        .news__author {
+            text-decoration: underline;
+            color: #007ddc;
+        }
+        .news__counr {
+            margin: 10px 0 0 0;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <script type="text/babel">
+        
+            const MyNews = [
+                {
+                    id: 1,
+                    author: "Саша Печкин",
+                    title: "В четверг, четвертого числа"
+                },
+                {
+                    id: 2,
+                    author: "Просто Вася",
+                    title: "Считаю. что $ должен стоить 35 рублей."
+                },
+                {
+                    id: 3,
+                    author: "Max Frontend",
+                    title: "Прошло два года, а доллар так и не стоит 35 рублей..."
+                },
+                {
+                    id: 4,
+                    author: "Гость",
+                    title: "Бесплатно. Без смс и регистрации"
+                },
+            ];
+
+            class Article extends React.Component {
+                render() {
+                    const { author, title } = this.props.data;
+                    return (
+                        <div className="article">
+                            <p className="news__author">{author}</p>
+                            <p className="news__text">{title}</p>
+                        </div>
+                    )
+                }
+            }
+
+            Article.propTypes = {
+                data: PropTypes.shape ({
+                    author: PropTypes.srting,
+                    title: PropTypes.srting
+                })
+            }
+
+            class News extends React.Component {
+
+                renderNews = () => {
+                    const { data } = this.props;
+                    let newsTemplate = null;
+
+                    if (data.length) {
+                        newsTemplate = data.map((item, index) => {
+                            return (
+                                <Article key={item.id} data={item} />
+                            )
+                        });
+                    } else {
+                        newsTemplate = <p>К сожалению новостей нет.</p>
+                    }
+                    
+                    return newsTemplate;
+                }
+
+                render() {
+                    const { data } = this.props;
+                    return (
+                        <React.Fragment>
+                            <div className="news">
+                                {this.renderNews()}
+                                {
+                                    (data.length) ?
+                                        <strong>Всего новостей: {data.length}</strong> :
+                                        null
+                                }
+                            </div>
+                        </React.Fragment>
+                    )
+                }
+            }
+            
+            // propTypes (с маленькой буквы) = свойство News
+            News.propTypes = {
+                data: PropTypes.array.isRequired    // PropTypes (с большой буквы) = библиотека prop-types
+            }
+
+
+            const App = () => {
+                return (
+                    <div>
+                        <h3>Новости</h3>
+                        <News data={MyNews} />
+                    </div>
+                )
+            }
+
+            ReactDOM.render(
+                <App />,
+                document.getElementById('root')
+            )
+
+        </script>
+    </div>
+</body>
+</html>
