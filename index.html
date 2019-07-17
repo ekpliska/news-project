@@ -206,18 +206,14 @@
                     isCheckRule: false
                 }
 
-                onChangeAuthorHandler = (e) => {
-                    let _value = e.currentTarget.value;
+                onChangeHandler = (e) => {
+                    const _value = e.currentTarget.value;
+                    const id = e.currentTarget.id;
                     this.setState({
-                        valueAuthor: _value
+                        [id]: _value
                     });
-                }
-
-                onChangeTextHandler = (e) => {
-                    let _value = e.currentTarget.value;
-                    this.setState({
-                        valueText: _value
-                    });
+                    console.log([id]);
+                    
                 }
 
                 onChangeRule = (e) => {
@@ -227,6 +223,16 @@
                     });
                     console.log(status);
                     
+                }
+
+                validate = () => {
+                    let _author = this.state.valueAuthor;
+                    let _text = this.state.valueText;
+                    let _agree = this.state.isCheckRule;
+                    if (_author.trim() && _text.trim() && _agree) {
+                        return true;
+                    }
+                    return false;
                 }
 
                 onBtnClickHandler = (e) => {
@@ -239,12 +245,12 @@
                     const { author, text, isCheckRule } = this.state;
                     return (
                         <div className="form-add-comment">
-                            <input type="text" className="add__author" placeholder="Ваше имя" value={author} onChange={this.onChangeAuthorHandler} />
-                            <textarea className="add__text" placeholder="Тест новости" value={text} onChange={this.onChangeTextHandler}></textarea>
+                            <input type="text" className="add__author" placeholder="Ваше имя" value={author} onChange={this.onChangeHandler} id="valueAuthor" />
+                            <textarea className="add__text" placeholder="Тест новости" value={text} onChange={this.onChangeHandler} id="valueText"></textarea>
                             <label className="add__checkrule">
                                 <input type="checkbox" onChange={this.onChangeRule} /> Я соласен с правилами
                             </label>
-                            <button className="add__btn" onClick={this.onBtnClickHandler} disabled={!isCheckRule}>
+                            <button className="add__btn" onClick={this.onBtnClickHandler} disabled={!this.validate()}>
                                 Отправить
                             </button>
                         </div>
