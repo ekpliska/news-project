@@ -24,6 +24,11 @@ p {
 .news__count {
   cursor: pointer;
 }
+.news__count {
+  float: right;
+  font-size: 10px;
+  font-weight: bold;
+}
 strong {
   cursor: pointer;
 }
