@@ -6,8 +6,6 @@ class News extends React.Component {
 
     // Создаем state на основе props
     state = {
-        // Создаем state на основе props
-        filteredNews: this.props.data,
         counter: 0,
     }
 
@@ -33,26 +31,26 @@ class News extends React.Component {
     //     console.log({ oldProps: this.props });
     // }
 
-    static getDerivedStateFromProps(props, state) {
-        let nextFilteredNews = [...props.data];
+    // static getDerivedStateFromProps(props, state) {
+    //     let nextFilteredNews = [...props.data];
 
-        nextFilteredNews.forEach((item, index) => {
-            if (item.bigText.toLowerCase().indexOf('pubg') !== -1) {
-                item.bigText = 'SPAM'
-            }
-        })
+    //     nextFilteredNews.forEach((item, index) => {
+    //         if (item.bigText.toLowerCase().indexOf('pubg') !== -1) {
+    //             item.bigText = 'SPAM'
+    //         }
+    //     })
         
-        return {
-            filteredNews: props.data
-        }
-    }
+    //     return {
+    //         filteredNews: props.data
+    //     }
+    // }
 
     renderNews = () => {
-        const { filteredNews } = this.state;
+        const { data } = this.props;
         let newsTemplate = null;
 
-        if (filteredNews.length) {
-            newsTemplate = filteredNews.map((item, index) => {
+        if (data.length) {
+            newsTemplate = data.map((item, index) => {
                 return (
                     <Article key={item.id} data={item} />
                 )
@@ -72,15 +70,15 @@ class News extends React.Component {
     }
 
     render() {
-        const { filteredNews } = this.state;
+        const { data } = this.props;
         const { counter } = this.state;
         return (
             <React.Fragment>
                 <div className="news">
                     {this.renderNews()}
                     {
-                        (filteredNews.length) ?
-                            <strong onClick={this.handleCounterClick}>Всего новостей: {filteredNews.length}</strong>:
+                        (data.length) ?
+                            <strong onClick={this.handleCounterClick}>Всего новостей: {data.length}</strong>:
                             null
                     }
                 </div>

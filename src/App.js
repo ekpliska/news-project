@@ -27,6 +27,31 @@ class App extends React.Component {
 		});
 	}
 
+	/**
+     * В этом методе жизненного цикла, получаем новое состояние,
+     * и проверяем если в bigText содержится "pubg", то этому полю присваиваем значение "SPAM",
+     * и затем отправляем в хранилище
+     */
+	static getDerivedStateFromProps(props, state) {
+		let nextFilteredNews;
+
+		// смотрим в state.news (ранее смотрели в props)
+		// и проверяем, чтобы не клоинировать null
+		// например, в момент первой отрисовки
+		if (Array.isArray(state.news)) {
+			nextFilteredNews = [...state.news];
+			nextFilteredNews.forEach((item, index) => {
+				if (item.bigText.toLowerCase().indexOf('pubg') !== -1) {
+					item.bigText = 'SPAM';
+				}
+			})
+			return {
+				news: nextFilteredNews
+			}
+		}
+		return null
+	}
+
 	handleAddNews = (data) => {
 		// Формируем массив на основе всего того что было уже в новостях,
 		// и кладем это в новый массив + новую ностьсть размещаем в начале массива
