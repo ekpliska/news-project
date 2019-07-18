@@ -4,16 +4,55 @@ import Article from './Article';
 
 class News extends React.Component {
 
+    // Создаем state на основе props
     state = {
+        // Создаем state на основе props
+        filteredNews: this.props.data,
         counter: 0,
     }
 
+    /**
+     * В этом методе жизненного цикла, получаем новое состояние,
+     * и проверяем если в bigText содержится "pubg", то этому полю присваиваем значение "SPAM",
+     * и затем отправляем в хранилище
+     */
+    // componentWillReceiveProps(nextProps) {
+    //     let nextFilteredNews = [...nextProps.data];
+
+    //     nextFilteredNews.forEach((item, index) => {
+    //         if (item.bigText.toLowerCase().indexOf('pubg') !== -1) {
+    //             item.bigText = 'SPAM'
+    //         }
+    //     })
+
+    //     this.setState({
+    //         filteredNews: nextFilteredNews
+    //     });
+
+    //     console.log({ nextProps });
+    //     console.log({ oldProps: this.props });
+    // }
+
+    static getDerivedStateFromProps(props, state) {
+        let nextFilteredNews = [...props.data];
+
+        nextFilteredNews.forEach((item, index) => {
+            if (item.bigText.toLowerCase().indexOf('pubg') !== -1) {
+                item.bigText = 'SPAM'
+            }
+        })
+        
+        return {
+            filteredNews: props.data
+        }
+    }
+
     renderNews = () => {
-        const { data } = this.props;
+        const { filteredNews } = this.state;
         let newsTemplate = null;
 
-        if (data.length) {
-            newsTemplate = data.map((item, index) => {
+        if (filteredNews.length) {
+            newsTemplate = filteredNews.map((item, index) => {
                 return (
                     <Article key={item.id} data={item} />
                 )
@@ -33,15 +72,15 @@ class News extends React.Component {
     }
 
     render() {
-        const { data } = this.props;
+        const { filteredNews } = this.state;
         const { counter } = this.state;
         return (
             <React.Fragment>
                 <div className="news">
                     {this.renderNews()}
                     {
-                        (data.length) ?
-                            <strong onClick={this.handleCounterClick}>Всего новостей: {data.length}</strong>:
+                        (filteredNews.length) ?
+                            <strong onClick={this.handleCounterClick}>Всего новостей: {filteredNews.length}</strong>:
                             null
                     }
                 </div>

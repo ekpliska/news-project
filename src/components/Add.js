@@ -56,7 +56,7 @@ class Add extends React.Component {
                     <input type="checkbox" onChange={this.onChangeRule} /> Я соласен с правилами
                 </label>
                 <button className="add__btn" onClick={this.onBtnClickHandler} disabled={!this.validate()}>
-                    Отправить
+                    Добавить новость
                 </button>
             </div>
         )
